@@ -1,8 +1,25 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 import javax.swing.JOptionPane;
 
 public class Caesar {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
+		
+		String filename = JOptionPane.showInputDialog("Enter the file name:");
+		
+		Scanner file = new Scanner(new File("/home/student/" + filename));
+		String aLine = file.nextLine();
+		System.out.println(aLine);
+		aLine = file.nextLine();
+		System.out.println(aLine);
+		aLine = file.nextLine();
+		System.out.println(aLine);
+		aLine = file.nextLine();
+		System.out.println(aLine);
+		
 		Cipher cipher = new Cipher();
 //		System.out.println(cipher.encode("DOG", 1));
 //		System.out.println(cipher.encode("DOG", 2));

@@ -1,7 +1,6 @@
 import java.util.List;
 import java.io.InputStream;
 
-import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Scanner;
@@ -15,11 +14,14 @@ public class Shuffle {
 
 	public String shuffleInput(InputStream input) {
 		Scanner scan = new Scanner(input);
+		scan.useDelimiter(" ");
 		StringBuilder output = new StringBuilder();
-		
+		String next;
 		while (scan.hasNext()) {
-			output.append(shuffleWord(scan.next()) + " ");
+			next = scan.next();
+			output.append(shuffleWord(next) + " ");
 		}
+		scan.close();
 		return output.toString();
 	}
 	
@@ -30,6 +32,7 @@ public class Shuffle {
 		while (scan.hasNext()) {
 			output.append(shuffleWord(scan.next()) + " ");
 		}
+		scan.close();
 		return output.toString();
 	}
 	
@@ -37,21 +40,31 @@ public class Shuffle {
 		
 		Random rand = new Random();
 		List<Character> set = new LinkedList<Character>();
-		
-		for (int x = 1; x < (s.length() - 1);x++) {
-//			System.out.println(s.charAt(x));
-			set.add(s.charAt(x));
+		List<Integer> literals = new LinkedList<Integer>();
+		if (s.length() < 2) {
+			return s;
 		}
-		
-		StringBuilder newString = new StringBuilder(s);
-		for (int x = 1; x < (s.length() - 1); x++) {
-//			System.out.println(newString);
-//			System.out.println(x);
-			String next = String.valueOf((char) set.remove(rand.nextInt(set.size())));
-//			System.out.println(next);
-			newString.replace(x, x+1, next);
+		else if (s.substring(0, 1).matches("[- .,';:!?\\\n]")) {
+			return s.substring(0,1) + shuffleWord(s.substring(1));
 		}
-		return newString.toString();
+		else if (s.substring(s.length()-1).matches("[- .,';:!?\\\n]")) {
+			return shuffleWord(s.substring(0,s.length()-1)) + s.substring(s.length()-1);
+		}
+		else {
+			for (int x = 1; x < (s.length() - 1);x++) {
+				if (!String.valueOf(s.charAt(x)).matches("[- .,';:!?\\\n]"))set.add(s.charAt(x));
+				else literals.add(x);
+			}
+			
+			StringBuilder newString = new StringBuilder(s);
+			for (int x = 1; x < (s.length() - 1); x++) {
+				if (!literals.contains(x)) {
+					String next = String.valueOf((char) set.remove(rand.nextInt(set.size())));
+					newString.replace(x, x+1, next);
+				}
+			}
+			return newString.toString();
+		}
 	}
 
 }
