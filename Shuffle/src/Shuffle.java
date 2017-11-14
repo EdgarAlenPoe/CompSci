@@ -20,6 +20,11 @@ public class Shuffle { //TODO fix linebreak handling. words are being scrambled 
 	public static void main(String[] args) throws HeadlessException, IOException {
 		Shuffle thing = new Shuffle();
 //		System.out.println(thing.shuffleWord("laws\nof"));
+//		Pattern pattern = Pattern.compile(".*?([- .,';:!?\\n\\r]).*", Pattern.DOTALL);
+//		System.err.println(pattern.matcher("avntioia,\n" + 
+//				"\n" + 
+//				"  \n" + 
+//				"there").matches());
 		JOptionPane.showMessageDialog(null, "This program will take a text file input, shuffle all words, then output into a new file in the same directory.");
 		JFileChooser chooser = new JFileChooser();
 		chooser.showOpenDialog(null);
@@ -47,7 +52,7 @@ public class Shuffle { //TODO fix linebreak handling. words are being scrambled 
 		
 	}
 	
-	private Pattern pattern = Pattern.compile(".*([- .,';:!?\\n\\r]).*");
+	private Pattern pattern = Pattern.compile(".*?([- .,';:!?\\n\\r]).*", Pattern.DOTALL);
 
 	public String shuffleInput(InputStream input) {
 		Scanner scan = new Scanner(input);
@@ -92,7 +97,7 @@ public class Shuffle { //TODO fix linebreak handling. words are being scrambled 
 			
 			
 //			System.err.println("debug, splitting");
-			int splitPoint = s.indexOf(match.group(1));
+			int splitPoint = match.start(1);
 //			System.err.println("splitPoint: " + match.group(1));
 //			System.err.println("getting first part");
 			String firstPart = shuffleWord(s.substring(0, splitPoint));
@@ -101,23 +106,16 @@ public class Shuffle { //TODO fix linebreak handling. words are being scrambled 
 			String lastPart = shuffleWord(s.substring(splitPoint + 1));
 			return  firstPart + match.group(1) + lastPart;
 		}
-//		else if (s.substring(0, 1).matches("[- .,';:!?\\n\\r]")) {
-//			System.err.println("debug, splitting");
-//			return s.substring(0,1) + shuffleWord(s.substring(1));
-//		}
-//		else if (s.substring(s.length()-1).matches("[- .,';:!?\\n\\r]")) {
-//			System.err.println("debug, splitting");
-//			return shuffleWord(s.substring(0,s.length()-1)) + s.substring(s.length()-1);
-//		}
 		else {
 //			System.err.println("debug, scrabbling");
-			for (int x = 1; x < (s.length() - 1);x++) {
+			
+			for (int x = 1; x < (s.length() - 1);x++) { //[- .,';:!?\\n\\r]
 				if (!String.valueOf(s.charAt(x)).matches("[- .,';:!?\\n\\r]")) {
 //					System.err.println("Inserting scramble");
 					set.add(s.charAt(x));
 				}
 				else  {
-//					System.err.println("Inserting literal");
+					System.err.println("Inserting literal: " + s.charAt(x));
 					literals.add(x);
 				}
 			}
@@ -129,7 +127,12 @@ public class Shuffle { //TODO fix linebreak handling. words are being scrambled 
 					newString.replace(x, x+1, next);
 				}
 			}
-			return newString.toString();
+			if (newString.equals(s)) {
+				return shuffleWord(s);
+			}
+			else {
+				return newString.toString();
+			}
 		}
 	}
 
