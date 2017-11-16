@@ -15,55 +15,79 @@ import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-public class Shuffle { //TODO fix linebreak handling. words are being scrambled across linebreaks with changing length.
+/**
+ * Simple program that will take an input file, then shuffle the words in the ways described here: <a href = "https://en.wikipedia.org/wiki/Typoglycemia">https://en.wikipedia.org/wiki/Typoglycemia</a>
+ * @author Edgar Schafer
+ *
+ */
+public class Shuffle { 
 
 	public static void main(String[] args) throws HeadlessException, IOException {
-		Shuffle thing = new Shuffle();
-//		System.out.println(thing.shuffleWord("laws\nof"));
-//		Pattern pattern = Pattern.compile(".*?([- .,';:!?\\n\\r]).*", Pattern.DOTALL);
-//		System.err.println(pattern.matcher("avntioia,\n" + 
-//				"\n" + 
-//				"  \n" + 
-//				"there").matches());
+		
 		JOptionPane.showMessageDialog(null, "This program will take a text file input, shuffle all words, then output into a new file in the same directory.");
+		
+		/*
+		 * Prompts user for a target file.
+		 */
 		JFileChooser chooser = new JFileChooser();
 		chooser.showOpenDialog(null);
 		File file = chooser.getSelectedFile();
 		
+		/*
+		 * Prompts user for a name for output file.
+		 */
 		File outFile = new File(file.getParent() + File.separator + JOptionPane.showInputDialog("Enter name for output file."));
 		
-		if (!outFile.createNewFile()) {
-			JOptionPane.showConfirmDialog(null, "File already exists. Overwrite it?");
+		/* 
+		 * If the file already exists, prompt user about overwriting it.
+		 */
+		boolean run = true;
+		
+		if (!outFile.createNewFile() && 0 != JOptionPane.showConfirmDialog(null, "File already exists. Overwrite it?")) {
+			run = false;
 		}
 		
-		PrintStream output = new PrintStream(outFile);
-		
-		
-		
-		try {
-			output.println(thing.shuffleInput(new FileInputStream(file)));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			System.exit(1);
+		/*
+		 * If everything is good, shuffle away, else, tell the user you exited.
+		 */
+		if (run) {
+			PrintStream output = new PrintStream(outFile);
+			Shuffle thing = new Shuffle();
+			
+			/*
+			 * Handles any potential problems with writing to the output, and closes the file.
+			 */
+			try {
+				output.println(thing.shuffleInput(new FileInputStream(file))); // Outputs and data at once, could be optimized
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			finally {
+				output.close();
+			}
 		}
-		finally {
-			output.close();
+		else {
+			JOptionPane.showMessageDialog(null, "Program aborted");
 		}
+		
 		
 	}
 	
-	private Pattern pattern = Pattern.compile(".*?([- .,';:!?\\n\\r]).*", Pattern.DOTALL);
+	private Pattern pattern = Pattern.compile(".*?([- .,';:!?\\n\\r\\t]).*", Pattern.DOTALL);
 
+	/**
+	 * <p>Takes a text input and shuffles all characters within words not counting first and last characters. (Ex: "Hello" may become "Hlleo" or "Hlelo". 
+	 * First and last letters always preserved.) Three letter words are not shuffled, as there is no new form for them to take.</p><p>Also preserves punctuation in output. (Ex: "Welcome! How are you today?" may become "Wlmcoee! How are you tdaoy?")</p>
+	 * @param input
+	 * @return
+	 */
 	public String shuffleInput(InputStream input) {
 		Scanner scan = new Scanner(input);
 		scan.useDelimiter(" ");
 		StringBuilder output = new StringBuilder();
 		String next;
-		int wordNum = 0;
 		while (scan.hasNext()) {
 			next = scan.next();
-//			System.err.println(wordNum);
-			wordNum++;
 			String nextOut = shuffleWord(next);
 			output.append(nextOut + " ");
 		}
@@ -71,6 +95,11 @@ public class Shuffle { //TODO fix linebreak handling. words are being scrambled 
 		return output.toString();
 	}
 	
+	/**
+	 * Same as shuffleInput, but handles string inputs.
+	 * @param input String to be shuffled
+	 * @return shuffled string
+	 */
 	public String shuffleInput(String input) {
 		Scanner scan = new Scanner(input);
 		StringBuilder output = new StringBuilder();
@@ -82,56 +111,65 @@ public class Shuffle { //TODO fix linebreak handling. words are being scrambled 
 		return output.toString();
 	}
 	
+	/**
+	 * Takes a string and shuffles letters within it. Recursively splits on punctuation to avoid awkward shuffles across periods and newlines.
+	 * @param s String to be shuffled
+	 * @return shuffle output
+	 */
 	public String shuffleWord(String s) {
 		
-		Random rand = new Random();
-		List<Character> set = new LinkedList<Character>();
-		List<Integer> literals = new LinkedList<Integer>();
+		
 		Matcher match = pattern.matcher(s);
 		
-		if (s.length() < 3) {
-//			System.err.println("debug, skipping");
+		/*
+		 *  Optimization and filter. If really short words enter they will break system, and three letter words can't be scrammbled.
+		 */
+		if (s.length() < 3) { 
 			return s;
 		}
-		else if (match.matches()) {
-			
-			
-//			System.err.println("debug, splitting");
+		/* 
+		 * Checks if punctuation is embedded with in word, then recursively breaks down problem to shuffle the words around punctuation
+		 * to keep formatting the same
+		 */
+		else if (match.matches()) {  
 			int splitPoint = match.start(1);
-//			System.err.println("splitPoint: " + match.group(1));
-//			System.err.println("getting first part");
 			String firstPart = shuffleWord(s.substring(0, splitPoint));
-//			System.err.println("getting last part");
-//			System.err.println(s.substring(splitPoint + 1));
 			String lastPart = shuffleWord(s.substring(splitPoint + 1));
 			return  firstPart + match.group(1) + lastPart;
 		}
+		/*
+		 * Main interesting bit. Does actual shuffling of words
+		 */
 		else {
-//			System.err.println("debug, scrabbling");
+			//TODO potential for optimizing four letter words ('four' could only become 'fuor', which could have a simpler algorithm)
 			
-			for (int x = 1; x < (s.length() - 1);x++) { //[- .,';:!?\\n\\r]
-				if (!String.valueOf(s.charAt(x)).matches("[- .,';:!?\\n\\r]")) {
-//					System.err.println("Inserting scramble");
-					set.add(s.charAt(x));
-				}
-				else  {
-					System.err.println("Inserting literal: " + s.charAt(x));
-					literals.add(x);
-				}
+			// Resources for scrambling
+			Random rand = new Random();
+			List<Character> set = new LinkedList<Character>();
+			List<Integer> literals = new LinkedList<Integer>();
+			
+			// inserts characters between first and last letters into a list
+			for (int x = 1; x < (s.length() - 1);x++) { 
+				set.add(s.charAt(x));
 			}
 			
 			StringBuilder newString = new StringBuilder(s);
+			
+			// Randomly choose (and remove from list) a letter in the list for each spot in word.
 			for (int x = 1; x < (s.length() - 1); x++) {
 				if (!literals.contains(x)) {
 					String next = String.valueOf((char) set.remove(rand.nextInt(set.size())));
 					newString.replace(x, x+1, next);
 				}
 			}
-			if (newString.equals(s)) {
+			// Quality check, ensure shuffled word isn't same as old word
+			String output = newString.toString();
+			
+			if (s.equals(output)) {
 				return shuffleWord(s);
 			}
 			else {
-				return newString.toString();
+				return output;
 			}
 		}
 	}
