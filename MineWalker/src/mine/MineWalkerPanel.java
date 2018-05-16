@@ -57,7 +57,7 @@ class CheatSheet extends JPanel {
 	public CheatSheet() {
 		super(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(0, 20, 0, 20);
+		gbc.insets = new Insets(0, 10, 0, 10);
 		gbc.gridy = 0;
 		this.add(makeLabel("0 Nearby Mines", Color.GREEN), gbc);
 		gbc.gridy = 1;
@@ -87,7 +87,7 @@ class CheatSheet extends JPanel {
 		label.setText(text);
 		label.setBackground(color);
 		label.setOpaque(true);
-		label.setPreferredSize(new Dimension(150, 100));
+		label.setPreferredSize(new Dimension(100, 100));
 		return label;
 	}
 	

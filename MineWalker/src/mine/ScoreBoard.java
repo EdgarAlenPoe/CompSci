@@ -1,5 +1,6 @@
 package mine;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -27,7 +28,9 @@ public class ScoreBoard extends JPanel {
 		gbc.insets = new Insets(10, 20, 0, 20);
 		
 		livesDisplay = new JLabel();
+//		livesDisplay.setPreferredSize(new Dimension(70,20));
 		scoreDisplay = new JLabel();
+//		scoreDisplay.setPreferredSize(new Dimension(70,20));
 		gbc.gridy = 0;
 		super.add(livesDisplay,gbc);
 		gbc.gridy = 1;
@@ -69,7 +72,18 @@ public class ScoreBoard extends JPanel {
 	
 	private void setScore(int score) {
 		this.score = score;
-		scoreDisplay.setText("Score: " + score);
+		if (score < 0) {
+			scoreDisplay.setText("Score: " + score);
+		}
+		if (score < 10) {
+			scoreDisplay.setText("Score:  " + score);
+		}
+		else if (score < 100) {
+			scoreDisplay.setText("Score:  " + score);
+		}
+		else {
+			scoreDisplay.setText("Score: " + score);
+		}
 	}
 	
 	public void reset() {

@@ -1,4 +1,5 @@
 package mine;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Random;
@@ -26,8 +27,6 @@ public class MineFieldPanel extends JPanel {
 	
 	public MineFieldPanel(int size, MineWalkerPanel parent) {
 		super(new GridBagLayout());
-//		super.setSize(800, 800);
-//		super.setBackground(Color.GREEN);
 		
 		this.parent = parent;
 		
