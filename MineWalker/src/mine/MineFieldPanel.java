@@ -53,40 +53,40 @@ public class MineFieldPanel extends JPanel {
 		
 		Random rand = new Random();
 		
-		// Draw path on prototype
-		int pathX = 0;
-		int pathY = 0; //size - 1;
-		
-		/*
-		 * Loop will run from bottom left corner to top right.
-		 * Moves up or right in a random pattern until it reaches the top or right edge.
-		 * Will place a -1 in edge reached
-		 * Successfully tested
-		 */
-		while ((pathX <= size - 1) && pathY <= size - 1 /* >= 0 */) {
-			mineFieldPrototype[pathY][pathX] = -1;
-			if (rand.nextBoolean()) {
-				// path goes up
-				pathY++;
-			}
-			else {
-				// path goes down
-				pathX++;
-			}
-		}
-		
-		/*
-		 * Loops finish path to edge that may have been missed
-		 * Successfully tested
-		 */
-		while (pathX <= size - 1) {
-			mineFieldPrototype[pathY -1][pathX] = -1;
-			pathX++;
-		}
-		while (pathY <= size - 1) { //>= 0) {
-			mineFieldPrototype[pathY][pathX - 1] = -1;
-			pathY++;
-		}
+//		// Draw path on prototype
+//		int pathX = 0;
+//		int pathY = 0; //size - 1;
+//		
+//		/*
+//		 * Loop will run from bottom left corner to top right.
+//		 * Moves up or right in a random pattern until it reaches the top or right edge.
+//		 * Will place a -1 in edge reached
+//		 * Successfully tested
+//		 */
+//		while ((pathX <= size - 1) && pathY <= size - 1 /* >= 0 */) {
+//			mineFieldPrototype[pathY][pathX] = -1;
+//			if (rand.nextBoolean()) {
+//				// path goes up
+//				pathY++;
+//			}
+//			else {
+//				// path goes down
+//				pathX++;
+//			}
+//		}
+//		
+//		/*
+//		 * Loops finish path to edge that may have been missed
+//		 * Successfully tested
+//		 */
+//		while (pathX <= size - 1) {
+//			mineFieldPrototype[pathY -1][pathX] = -1;
+//			pathX++;
+//		}
+//		while (pathY <= size - 1) { //>= 0) {
+//			mineFieldPrototype[pathY][pathX - 1] = -1;
+//			pathY++;
+//		}
 		
 		
 		/*
@@ -112,26 +112,26 @@ public class MineFieldPanel extends JPanel {
 		for (int y = 0; y < mineField.length; y++) {
 			for (int x = 0; x < mineField.length; x++) {
 				if (mineField[y][x] == null) {
-					if (x == 0 && y == 0) {
-						MineFieldButton button = new StartingButton(x, y, sizeForButtons, Math.abs(mineFieldPrototype[y][x]) - 1, this);
-						super.add(button, this.constraintsAtPoint(x, y));
-						mineField[y][x] = button;
-					}
-					else if (x == mineField.length - 1 && y == mineField.length - 1) {
-						MineFieldButton button = new EndingButton(x, y, sizeForButtons, Math.abs(mineFieldPrototype[y][x]) - 1, this);
-						super.add(button, this.constraintsAtPoint(x, y));
-						mineField[y][x] = button;
-					}
-					else if (mineFieldPrototype[y][x] < 0) {
-						MineFieldButton button = new PathButton(x, y, sizeForButtons, Math.abs(mineFieldPrototype[y][x]) - 1, this);
-						super.add(button, this.constraintsAtPoint(x, y));
-						mineField[y][x] = button;
-					}
-					else {
-						MineFieldButton button = new NormalButton(x, y, sizeForButtons, mineFieldPrototype[y][x], this);
-						super.add(button, this.constraintsAtPoint(x, y));
-						mineField[y][x] = button;
-					}
+//					if (x == 0 && y == 0) {
+//						MineFieldButton button = new StartingButton(x, y, sizeForButtons, Math.abs(mineFieldPrototype[y][x]) - 1, this);
+//						super.add(button, this.constraintsAtPoint(x, y));
+//						mineField[y][x] = button;
+//					}
+//					else if (x == mineField.length - 1 && y == mineField.length - 1) {
+//						MineFieldButton button = new EndingButton(x, y, sizeForButtons, Math.abs(mineFieldPrototype[y][x]) - 1, this);
+//						super.add(button, this.constraintsAtPoint(x, y));
+//						mineField[y][x] = button;
+//					}
+//					else if (mineFieldPrototype[y][x] < 0) {
+//						MineFieldButton button = new PathButton(x, y, sizeForButtons, Math.abs(mineFieldPrototype[y][x]) - 1, this);
+//						super.add(button, this.constraintsAtPoint(x, y));
+//						mineField[y][x] = button;
+//					}
+//					else {
+					MineFieldButton button = new NormalButton(x, y, sizeForButtons, mineFieldPrototype[y][x], this);
+					super.add(button, this.constraintsAtPoint(x, y));
+					mineField[y][x] = button;
+//					}
 				}
 			}
 		}
@@ -142,6 +142,11 @@ public class MineFieldPanel extends JPanel {
 		safelyIncrementPoint(x+1,y,mineFieldPrototype);
 		safelyIncrementPoint(x,y+1,mineFieldPrototype);
 		safelyIncrementPoint(x,y-1,mineFieldPrototype);
+		
+		safelyIncrementPoint(x-1,y-1,mineFieldPrototype);
+		safelyIncrementPoint(x+1,y+1,mineFieldPrototype);
+		safelyIncrementPoint(x-1,y+1,mineFieldPrototype);
+		safelyIncrementPoint(x+1,y-1,mineFieldPrototype);
 	}
 	
 	private void safelyIncrementPoint(int x, int y, int[][] mineFieldPrototype) {

@@ -23,32 +23,32 @@ public class NormalButton extends MineFieldButton {
 	private class TimerActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent evt)
 		{
-//			if (NormalButton.this.getText() == "") {
-//				NormalButton.this.setText("*");
+////			if (NormalButton.this.getText() == "") {
+////				NormalButton.this.setText("*");
+////			}
+////			else {
+////				NormalButton.this.setText("");
+////			}
+//			if (NormalButton.this.getBackground() != Color.LIGHT_GRAY) {
+//				NormalButton.this.setBackground(Color.LIGHT_GRAY);;
 //			}
 //			else {
-//				NormalButton.this.setText("");
+//				switch (numberAdjacent) {
+//				case 0:
+//					NormalButton.this.setBackground(Color.GREEN);
+//					break;
+//				case 1:
+//					NormalButton.this.setBackground(Color.YELLOW);
+//					break;
+//				case 2:
+//					NormalButton.this.setBackground(Color.ORANGE);
+//					break;
+//				case 3:
+//				default:
+//					NormalButton.this.setBackground(Color.RED);
+//					break;
+//				}
 //			}
-			if (NormalButton.this.getBackground() != Color.LIGHT_GRAY) {
-				NormalButton.this.setBackground(Color.LIGHT_GRAY);;
-			}
-			else {
-				switch (numberAdjacent) {
-				case 0:
-					NormalButton.this.setBackground(Color.GREEN);
-					break;
-				case 1:
-					NormalButton.this.setBackground(Color.YELLOW);
-					break;
-				case 2:
-					NormalButton.this.setBackground(Color.ORANGE);
-					break;
-				case 3:
-				default:
-					NormalButton.this.setBackground(Color.RED);
-					break;
-				}
-			}
 		}
 	}
 
@@ -60,30 +60,63 @@ public class NormalButton extends MineFieldButton {
 
 	@Override
 	public void whenClicked() {
-		MineFieldButton currentPosition = parentPanel.currentPosition;
-		if (currentPosition != null) {
-			if (currentPosition.canMoveFrom(this) && this.canMoveTo(currentPosition)) {
-				super.revealed = true;
-				this.setAsCurrentPosition(true);
-				switch (numberAdjacent) {
-					case 0:
-						super.setBackground(Color.GREEN);
-						break;
-					case 1:
-						super.setBackground(Color.YELLOW);
-						break;
-					case 2:
-						super.setBackground(Color.ORANGE);
-						break;
-					case 3:
-					default:
-						super.setBackground(Color.RED);
-						break;
-				}
+		if (!revealed) {
+			super.revealed = true;
+			this.setAsCurrentPosition(true);
+//			super.setText(String.valueOf(numberAdjacent));
+			super.setBackground(Color.WHITE);
+			switch (numberAdjacent) {
+				case 0:
+					super.setBackground(Color.LIGHT_GRAY);
+					break;
+				case 1:	
+					super.setBackground(Color.CYAN);
+					break;
+				case 2:
+					super.setBackground(Color.GREEN);
+					break;
+				case 3:
+					super.setBackground(Color.RED);
+					break;
+				case 4:
+					super.setBackground(Color.MAGENTA);
+					break;
+				case 5:
+					super.setBackground(Color.GRAY);
+					break;
+				case 6:
+					super.setBackground(Color.orange);
+					break;
+				case 7:
+					super.setBackground(Color.BLACK);
+					break;
+				case 8:
+					super.setBackground(Color.BLUE);
+					break;
+				default:
+					super.setBackground(Color.BLACK);
+					break;
+			}
+			if (numberAdjacent == 0) {
+				int x = this.mineFieldX;
+				int y = this.mineFieldY;
+				safelyClick(x,y+1);
+				safelyClick(x+1,y+1);
+				safelyClick(x-1,y+1);
+				safelyClick(x,y-1);
+				safelyClick(x+1,y-1);
+				safelyClick(x-1,y-1);
+				safelyClick(x+1,y);
+				safelyClick(x-1,y);
 			}
 		}
 	}
-
+	
+	private void safelyClick(int x, int y) {
+		if (!(x < 0 || x >= parentPanel.mineFieldSize || y < 0 || y >= parentPanel.mineFieldSize))
+		parentPanel.mineField[y][x].whenClicked();
+	}
+	
 	@Override
 	public void revealForEnd() {
 		// Do nothing, these spots don't display at end game
@@ -130,21 +163,21 @@ public class NormalButton extends MineFieldButton {
     
     private void stopAnimation() {
     	animationTimer.stop();
-    	switch (numberAdjacent) {
-		case 0:
-			NormalButton.this.setBackground(Color.GREEN);
-			break;
-		case 1:
-			NormalButton.this.setBackground(Color.YELLOW);
-			break;
-		case 2:
-			NormalButton.this.setBackground(Color.ORANGE);
-			break;
-		case 3:
-		default:
-			NormalButton.this.setBackground(Color.RED);
-			break;
-		}
+//    	switch (numberAdjacent) {
+//		case 0:
+//			NormalButton.this.setBackground(Color.GREEN);
+//			break;
+//		case 1:
+//			NormalButton.this.setBackground(Color.YELLOW);
+//			break;
+//		case 2:
+//			NormalButton.this.setBackground(Color.ORANGE);
+//			break;
+//		case 3:
+//		default:
+//			NormalButton.this.setBackground(Color.RED);
+//			break;
+//		}
     }
 
 

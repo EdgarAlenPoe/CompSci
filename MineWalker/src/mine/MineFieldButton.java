@@ -16,8 +16,8 @@ public abstract class MineFieldButton extends JButton {
 	}
 
 	protected boolean revealed = false;
-	private int mineFieldX;
-	private int mineFieldY;
+	protected int mineFieldX;
+	protected int mineFieldY;
 	protected MineFieldPanel parentPanel;
 	private boolean frozen = false;
 	
@@ -80,6 +80,10 @@ public abstract class MineFieldButton extends JButton {
 	
 	public abstract void whenClicked();
 	
+	public boolean getRevealed() {
+		return revealed;
+	}
+	
 	public void whenMouseEnters() {
 		if (!revealed) {
 			super.setBackground(Color.DARK_GRAY);
@@ -107,15 +111,16 @@ public abstract class MineFieldButton extends JButton {
 	 * @param end button the movement is going to. Allows button to discriminate between different buttons for special behavior
 	 */
 	public boolean canMoveTo(MineFieldButton end) {
-		boolean verticallyAdjacent = (Math.abs(this.getMineFieldY() - end.getMineFieldY()) == 1 && (this.getMineFieldX() - end.getMineFieldX()) == 0);
-		boolean horizontallyAdjacent = ((Math.abs(this.getMineFieldX() - end.getMineFieldX()) == 1) && (this.getMineFieldY() - end.getMineFieldY()) == 0);
-		
-		if (verticallyAdjacent ^ horizontallyAdjacent) {
-			return true;
-		}
-		else {
-			return false;
-		}
+//		boolean verticallyAdjacent = (Math.abs(this.getMineFieldY() - end.getMineFieldY()) == 1 && (this.getMineFieldX() - end.getMineFieldX()) == 0);
+//		boolean horizontallyAdjacent = ((Math.abs(this.getMineFieldX() - end.getMineFieldX()) == 1) && (this.getMineFieldY() - end.getMineFieldY()) == 0);
+//		
+//		if (verticallyAdjacent ^ horizontallyAdjacent) {
+//			return true;
+//		}
+//		else {
+//			return false;
+//		}
+		return true;
 	}
 	
 	/**
